@@ -81,7 +81,7 @@ function getTrailingStop(entryPrice, highestPrice, trailingPercent) {
 }
 
 
-async function sellWatcher() {
+async function sellWatcher(exchange) {
   console.log('🔔 SellWatcher démarré');
   while (true) {
     try {
@@ -284,8 +284,6 @@ cron.schedule('1 0 * * *', () => {
 
 console.log('🤖 Cron de ré-entraînement IA programmé chaque jour à minuit.');
 
-sellWatcher(); // Démarre la surveillance des ventes en parallèle
-
 
 (async () => {
   // 1) Affichage des soldes au démarrage
@@ -295,6 +293,7 @@ sellWatcher(); // Démarre la surveillance des ventes en parallèle
     secret: process.env.KRAKEN_SECRET,
   });
   const balances = await exchange.fetchBalance();
+  sellWatcher(exchange); // Démarre la surveillance des ventes en parallèle
   console.log("💰 Soldes disponibles :", {
     USD: balances.total.USD,
     CAD: balances.total.CAD,
